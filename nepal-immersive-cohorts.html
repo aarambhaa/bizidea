@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yātrā — Immersive Academic Cohorts in Nepal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Libre+Baskerville:ital@0;1&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #1C1814;
+  --ink2: #3A342D;
+  --warm: #7A6652;
+  --muted: #A89880;
+  --sand: #EDE5D8;
+  --parchment: #F7F3EC;
+  --paper: #FDFAF6;
+  --gold: #B8924A;
+  --gold-light: #D4AE72;
+  --rust: #8B4A2F;
+  --sage: #5A7A5C;
+  --sky: #4A6B8A;
+  --border: rgba(90,70,50,0.12);
+  --border2: rgba(90,70,50,0.22);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Karla', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  mix-blend-mode: multiply;
+}
+.cursor.expand { width: 40px; height: 40px; background: var(--gold-light); opacity: 0.5; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem 3rem;
+  transition: background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  background: rgba(253,250,246,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 2.5rem; align-items: center; }
+.nav-links a {
+  font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--warm); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--paper) !important;
+  background: var(--ink);
+  padding: 10px 22px;
+  border-radius: 2px;
+  transition: background 0.2s !important;
+}
+.nav-cta:hover { background: var(--gold) !important; color: var(--paper) !important; }
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.nav-hamburger span { display: block; width: 24px; height: 1px; background: var(--ink); transition: 0.3s; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+.hero-left {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 8rem 4rem 5rem 3rem;
+  position: relative; z-index: 2;
+}
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.hero-eyebrow::before {
+  content: ''; display: block; width: 40px; height: 1px; background: var(--gold);
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+.hero-title em { font-style: italic; color: var(--gold); }
+.hero-sub {
+  font-size: 15px; line-height: 1.8; color: var(--warm);
+  max-width: 420px; margin-bottom: 3rem;
+}
+.hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-block;
+  background: var(--ink); color: var(--paper);
+  padding: 14px 32px; font-size: 12px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; border-radius: 2px;
+  transition: background 0.25s, transform 0.2s;
+  border: none; cursor: none;
+}
+.btn-primary:hover { background: var(--gold); transform: translateY(-1px); }
+.btn-ghost {
+  display: inline-block;
+  color: var(--warm); padding: 14px 0;
+  font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none;
+  border-bottom: 1px solid var(--border2);
+  transition: color 0.2s, border-color 0.2s;
+  cursor: none;
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+.hero-right {
+  position: relative; overflow: hidden;
+}
+.hero-img-wrap {
+  position: absolute; inset: 0;
+  background: var(--sand);
+}
+.hero-mountain-svg {
+  position: absolute; bottom: 0; left: 0; right: 0;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(28,24,20,0.15) 0%, transparent 50%);
+}
+.hero-caption {
+  position: absolute; bottom: 2rem; right: 2rem;
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  writing-mode: vertical-rl; transform: rotate(180deg);
+}
+.hero-stats {
+  position: absolute; bottom: 5rem; left: 3rem;
+  display: flex; gap: 3rem;
+}
+.hero-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem; font-weight: 300; color: var(--paper);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(255,255,255,0.6);
+  margin-top: 4px;
+}
+.scroll-indicator {
+  position: absolute; bottom: 2rem; left: 3rem;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0.5;
+}
+.scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollAnim 2s infinite;
+}
+@keyframes scrollAnim {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+.scroll-text { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--warm); }
+
+/* MARQUEE */
+.marquee-strip {
+  background: var(--ink); padding: 14px 0; overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-inner {
+  display: inline-flex; animation: marquee 30s linear infinite;
+}
+.marquee-item {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); padding: 0 3rem;
+  display: inline-flex; align-items: center; gap: 3rem;
+}
+.marquee-item::after { content: '✦'; color: var(--gold); font-size: 8px; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ABOUT / INTRO */
+.section { padding: 7rem 3rem; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+
+.intro-grid {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 6rem; align-items: start;
+}
+.intro-label {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1rem;
+  position: sticky; top: 7rem;
+}
+.intro-label-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem; font-weight: 300; color: var(--sand); line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.intro-body h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300;
+  line-height: 1.2; margin-bottom: 2rem; color: var(--ink);
+}
+.intro-body h2 em { font-style: italic; color: var(--gold); }
+.intro-body p {
+  font-size: 16px; line-height: 1.9; color: var(--warm);
+  margin-bottom: 1.5rem;
+}
+.intro-body p strong { color: var(--ink); font-weight: 500; }
+.divider-ornament {
+  text-align: center; color: var(--gold); font-size: 14px;
+  letter-spacing: 1em; margin: 3rem 0;
+  opacity: 0.4;
+}
+
+/* PROGRAMS */
+.programs-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 4rem; flex-wrap: wrap; gap: 1rem;
+}
+.section-label {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 300;
+  line-height: 1.15; color: var(--ink);
+}
+.section-title em { font-style: italic; color: var(--gold); }
+.programs-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.program-card {
+  background: var(--paper); padding: 3rem 2.5rem;
+  transition: background 0.3s; cursor: none;
+  position: relative; overflow: hidden;
+}
+.program-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--card-accent, var(--gold));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.program-card:hover::before { transform: scaleX(1); }
+.program-card:hover { background: var(--parchment); }
+.program-icon {
+  width: 48px; height: 48px;
+  border: 1px solid var(--border2);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 2rem; font-size: 20px;
+}
+.program-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; font-weight: 300; color: var(--sand);
+  position: absolute; top: 1.5rem; right: 2rem; line-height: 1;
+}
+.program-duration {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.75rem;
+}
+.program-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 400;
+  line-height: 1.2; color: var(--ink); margin-bottom: 1rem;
+}
+.program-desc {
+  font-size: 14px; line-height: 1.8; color: var(--warm); margin-bottom: 2rem;
+}
+.program-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 2rem; }
+.program-tag {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 12px; border: 1px solid var(--border2);
+  border-radius: 2px; color: var(--warm);
+}
+.program-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.program-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; color: var(--ink);
+}
+.program-price span { font-size: 12px; color: var(--muted); font-family: 'Karla', sans-serif; }
+.program-link {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); text-decoration: none;
+  display: flex; align-items: center; gap: 6px; cursor: none;
+  transition: gap 0.2s;
+}
+.program-link:hover { gap: 12px; }
+
+/* HOW IT WORKS */
+.how-bg { background: var(--ink); }
+.how-bg .section-title, .how-bg .section-label { color: var(--gold-light); }
+.how-bg .section-title em { color: var(--gold-light); }
+.steps-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  margin-top: 4rem; border: 1px solid rgba(255,255,255,0.08);
+}
+.step {
+  padding: 3rem 2rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+}
+.step:last-child { border-right: none; }
+.step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem; font-weight: 300;
+  color: rgba(255,255,255,0.06); line-height: 1;
+  margin-bottom: 1.5rem;
+}
+.step-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; color: var(--sand);
+  margin-bottom: 0.75rem;
+}
+.step-desc { font-size: 13px; line-height: 1.8; color: var(--muted); }
+.step-arrow {
+  position: absolute; top: 3rem; right: -12px;
+  width: 24px; height: 24px;
+  background: var(--gold); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--ink); z-index: 2;
+}
+.step:last-child .step-arrow { display: none; }
+
+/* THEMES / PILLARS */
+.pillars-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+  background: var(--border); margin-top: 4rem;
+}
+.pillar {
+  background: var(--paper); padding: 3rem;
+  display: flex; gap: 2rem; align-items: flex-start;
+  transition: background 0.3s; cursor: none;
+}
+.pillar:hover { background: var(--parchment); }
+.pillar-icon-wrap {
+  flex-shrink: 0;
+  width: 56px; height: 56px;
+  border: 1px solid var(--border2); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.pillar-content h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 400;
+  color: var(--ink); margin-bottom: 0.5rem;
+}
+.pillar-content p { font-size: 13px; line-height: 1.7; color: var(--warm); }
+
+/* TESTIMONIALS / PULL QUOTES */
+.pullquote-section { background: var(--sand); }
+.pullquote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.pullquote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 300;
+  font-style: italic; line-height: 1.4; color: var(--ink);
+}
+.pullquote-text::before { content: '\201C'; color: var(--gold); font-size: 4rem; line-height: 0; vertical-align: -0.5em; }
+.pullquote-attribution {
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--warm); margin-top: 1.5rem;
+}
+.pullquote-right { display: flex; flex-direction: column; gap: 1.5rem; }
+.mini-quote {
+  padding: 1.5rem; border-left: 2px solid var(--gold);
+  background: rgba(255,255,255,0.5);
+}
+.mini-quote p { font-size: 14px; line-height: 1.7; color: var(--ink2); font-style: italic; }
+.mini-quote-attr { font-size: 11px; color: var(--muted); margin-top: 0.75rem; letter-spacing: 0.05em; }
+
+/* APPLICATION / CTA */
+.apply-section { background: var(--parchment); }
+.apply-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+.apply-left h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 300;
+  line-height: 1.2; margin-bottom: 1.5rem; color: var(--ink);
+}
+.apply-left h2 em { font-style: italic; color: var(--gold); }
+.apply-left p { font-size: 15px; line-height: 1.8; color: var(--warm); margin-bottom: 2rem; }
+.apply-details { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+.apply-detail-row {
+  display: flex; gap: 1.5rem; align-items: flex-start;
+  padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.apply-detail-label { color: var(--muted); width: 100px; flex-shrink: 0; font-size: 12px; letter-spacing: 0.05em; }
+.apply-detail-val { color: var(--ink2); }
+
+/* FORM */
+.form-card {
+  background: var(--paper); border: 1px solid var(--border2);
+  padding: 3rem; border-radius: 4px;
+}
+.form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 400;
+  color: var(--ink); margin-bottom: 0.5rem;
+}
+.form-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 2rem; }
+.form-group { margin-bottom: 1.5rem; }
+.form-label {
+  display: block; font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--warm); margin-bottom: 6px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 12px 16px;
+  border: 1px solid var(--border2); border-radius: 2px;
+  background: var(--parchment); color: var(--ink);
+  font-family: 'Karla', sans-serif; font-size: 14px;
+  transition: border-color 0.2s, background 0.2s;
+  outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--gold); background: var(--paper);
+}
+.form-textarea { resize: vertical; min-height: 100px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-submit {
+  width: 100%; padding: 15px; background: var(--ink); color: var(--paper);
+  border: none; border-radius: 2px; font-family: 'Karla', sans-serif;
+  font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: none; transition: background 0.25s;
+  margin-top: 0.5rem;
+}
+.form-submit:hover { background: var(--gold); }
+.form-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 1rem; }
+.form-success {
+  display: none; text-align: center; padding: 2rem;
+}
+.form-success-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.form-success h3 {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
+  color: var(--ink); margin-bottom: 0.5rem;
+}
+.form-success p { font-size: 14px; color: var(--warm); }
+
+/* FAQ */
+.faq-list { max-width: 720px; margin: 3rem auto 0; }
+.faq-item {
+  border-bottom: 1px solid var(--border); overflow: hidden;
+}
+.faq-question {
+  width: 100%; text-align: left; background: none; border: none;
+  padding: 1.5rem 0; display: flex; justify-content: space-between;
+  align-items: center; cursor: none; font-family: 'Karla', sans-serif;
+  font-size: 15px; color: var(--ink); font-weight: 400;
+}
+.faq-question:hover { color: var(--gold); }
+.faq-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border: 1px solid var(--border2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--warm); transition: transform 0.3s, background 0.2s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--gold); color: var(--paper); border-color: var(--gold); }
+.faq-answer {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s;
+  font-size: 14px; line-height: 1.8; color: var(--warm);
+}
+.faq-item.open .faq-answer { max-height: 300px; padding-bottom: 1.5rem; }
+
+/* FOOTER */
+footer {
+  background: var(--ink); padding: 5rem 3rem 3rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem;
+  margin-bottom: 4rem; padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 300; color: var(--sand);
+  margin-bottom: 1rem;
+}
+.footer-logo span { color: var(--gold); }
+.footer-tagline { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 260px; }
+.footer-col-title {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.5rem;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+.footer-col ul li a {
+  font-size: 13px; color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-col ul li a:hover { color: var(--sand); }
+.footer-bottom {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.2); }
+.footer-badge {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); border: 1px solid rgba(184,146,74,0.3);
+  padding: 6px 16px; border-radius: 2px;
+}
+
+/* ANIMATIONS */
+.fade-up {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.fade-up-delay-1 { transition-delay: 0.1s; }
+.fade-up-delay-2 { transition-delay: 0.2s; }
+.fade-up-delay-3 { transition-delay: 0.3s; }
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .hero-left { padding: 10rem 2rem 5rem; min-height: 100vh; justify-content: center; }
+  .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .programs-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .pillars-grid { grid-template-columns: 1fr; }
+  .apply-grid { grid-template-columns: 1fr; }
+  .pullquote-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+@media (max-width: 640px) {
+  nav { padding: 1.25rem 1.5rem; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .section { padding: 4rem 1.5rem; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .hero-left { padding: 8rem 1.5rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Yātrā<span>.</span></a>
+  <div class="nav-links">
+    <a href="#programs">Programs</a>
+    <a href="#how">How it works</a>
+    <a href="#themes">Themes</a>
+    <a href="#faq">FAQ</a>
+    <a href="#apply" class="nav-cta">Apply now</a>
+  </div>
+  <div class="nav-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Kathmandu · Nepal · Est. 2025</div>
+    <h1 class="hero-title fade-up">
+      Learn where<br>the world<br><em>still breathes.</em>
+    </h1>
+    <p class="hero-sub fade-up fade-up-delay-1">
+      Cohort-based academic immersion programs for international university students. Two to six weeks in Nepal — studying disaster risk, Himalayan ecology, spirituality, and heritage in the field.
+    </p>
+    <div class="hero-actions fade-up fade-up-delay-2">
+      <a href="#programs" class="btn-primary">Explore programs</a>
+      <a href="#how" class="btn-ghost">How it works →</a>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Scroll</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <!-- SVG mountain landscape -->
+      <svg class="hero-mountain-svg" viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#C4B8A8"/>
+            <stop offset="100%" stop-color="#EDE5D8"/>
+          </linearGradient>
+          <linearGradient id="mtGrad1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FDFAF6"/>
+            <stop offset="60%" stop-color="#D4C9B8"/>
+            <stop offset="100%" stop-color="#8B7A68"/>
+          </linearGradient>
+          <linearGradient id="mtGrad2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#EDE5D8"/>
+            <stop offset="100%" stop-color="#6A5C4E"/>
+          </linearGradient>
+          <linearGradient id="fgGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4A5C3A"/>
+            <stop offset="100%" stop-color="#2C3A22"/>
+          </linearGradient>
+        </defs>
+        <!-- Sky -->
+        <rect width="700" height="600" fill="url(#skyGrad)"/>
+        <!-- Clouds -->
+        <ellipse cx="150" cy="100" rx="120" ry="35" fill="rgba(255,255,255,0.4)"/>
+        <ellipse cx="200" cy="90" rx="80" ry="25" fill="rgba(255,255,255,0.5)"/>
+        <ellipse cx="520" cy="130" rx="100" ry="28" fill="rgba(255,255,255,0.35)"/>
+        <!-- Far mountains -->
+        <polygon points="0,350 80,180 160,280 240,150 320,240 400,120 480,230 560,160 640,250 700,200 700,600 0,600" fill="#C4B8A8" opacity="0.5"/>
+        <!-- Mid mountains -->
+        <polygon points="0,420 100,250 200,350 300,200 380,300 460,180 540,280 620,220 700,300 700,600 0,600" fill="url(#mtGrad2)" opacity="0.8"/>
+        <!-- Main peak -->
+        <polygon points="250,420 350,120 450,420" fill="url(#mtGrad1)"/>
+        <polygon points="340,200 350,120 360,200 355,195 350,185 345,195" fill="rgba(255,255,255,0.9)"/>
+        <!-- Snow patches -->
+        <polygon points="310,280 350,120 390,280 375,270 360,300 350,280 340,300 325,270" fill="rgba(255,255,255,0.8)"/>
+        <!-- Foothills -->
+        <polygon points="0,500 150,380 300,460 450,370 600,440 700,400 700,600 0,600" fill="url(#fgGrad)" opacity="0.9"/>
+        <!-- Trees silhouette -->
+        <g fill="#2C3A22" opacity="0.7">
+          <rect x="50" y="490" width="4" height="30"/>
+          <polygon points="52,460 42,495 62,495"/>
+          <polygon points="52,475 44,498 60,498"/>
+          <rect x="120" y="480" width="4" height="35"/>
+          <polygon points="122,448 110,486 134,486"/>
+          <rect x="600" y="485" width="4" height="30"/>
+          <polygon points="602,455 592,490 612,490"/>
+          <rect x="650" y="492" width="3" height="25"/>
+          <polygon points="651,465 643,497 659,497"/>
+        </g>
+        <!-- Prayer flags line -->
+        <line x1="200" y1="320" x2="500" y2="290" stroke="rgba(184,146,74,0.4)" stroke-width="0.8"/>
+        <rect x="220" y="315" width="12" height="9" fill="rgba(139,74,47,0.5)" rx="1"/>
+        <rect x="255" y="312" width="12" height="9" fill="rgba(90,122,92,0.5)" rx="1"/>
+        <rect x="290" y="310" width="12" height="9" fill="rgba(255,255,255,0.4)" rx="1"/>
+        <rect x="325" y="308" width="12" height="9" fill="rgba(74,107,138,0.5)" rx="1"/>
+        <rect x="360" y="306" width="12" height="9" fill="rgba(184,146,74,0.5)" rx="1"/>
+        <rect x="395" y="304" width="12" height="9" fill="rgba(139,74,47,0.5)" rx="1"/>
+        <rect x="430" y="302" width="12" height="9" fill="rgba(90,122,92,0.5)" rx="1"/>
+        <rect x="465" y="300" width="12" height="9" fill="rgba(255,255,255,0.4)" rx="1"/>
+        <!-- Golden hour glow -->
+        <ellipse cx="350" cy="400" rx="300" ry="150" fill="rgba(184,146,74,0.08)"/>
+      </svg>
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Programs</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">15</div>
+        <div class="hero-stat-label">Max cohort</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">8848m</div>
+        <div class="hero-stat-label">Classroom</div>
+      </div>
+    </div>
+    <div class="hero-caption">Himalayas · Nepal · 2025</div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span class="marquee-item">Himalayan Ecology</span>
+    <span class="marquee-item">Disaster Risk Reduction</span>
+    <span class="marquee-item">Sacred Heritage</span>
+    <span class="marquee-item">Sustainable Agriculture</span>
+    <span class="marquee-item">Field Research</span>
+    <span class="marquee-item">Academic Credit</span>
+    <span class="marquee-item">Himalayan Ecology</span>
+    <span class="marquee-item">Disaster Risk Reduction</span>
+    <span class="marquee-item">Sacred Heritage</span>
+    <span class="marquee-item">Sustainable Agriculture</span>
+    <span class="marquee-item">Field Research</span>
+    <span class="marquee-item">Academic Credit</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="intro-grid">
+      <div>
+        <div class="intro-label-num">01</div>
+        <div class="intro-label">Our Philosophy</div>
+      </div>
+      <div class="intro-body">
+        <h2 class="fade-up">Nepal is not a destination.<br>It is a <em>living classroom.</em></h2>
+        <p class="fade-up">Most of what universities teach about climate change, disaster risk, ancient architecture, and spiritual tradition — Nepal has already been practicing, surviving, and refining for thousands of years. The knowledge here is not in books. It's in the soil, the riverbanks, the monastery walls, the emergency protocols of communities who have rebuilt after earthquakes.</p>
+        <p class="fade-up">Yātrā brings small cohorts of international students here — not as tourists, but as researchers, learners, and guests. You work alongside local experts, government agencies, and communities. You produce real work. And you leave with a depth of understanding that no lecture hall can replicate.</p>
+        <div class="divider-ornament">✦ ✦ ✦</div>
+        <p class="fade-up"><strong>Yātrā</strong> (यात्रा) means journey in Nepali and Sanskrit — a journey that transforms both the traveller and the path.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="section" id="programs" style="background: var(--parchment); padding-top: 5rem;">
+  <div class="section-inner">
+    <div class="programs-header">
+      <div>
+        <div class="section-label">2025 Programs</div>
+        <h2 class="section-title">Three ways to<br><em>go deeper.</em></h2>
+      </div>
+      <a href="#apply" class="btn-ghost">Apply for a cohort →</a>
+    </div>
+    <div class="programs-grid fade-up">
+      <div class="program-card" style="--card-accent: var(--sage);">
+        <div class="program-num">01</div>
+        <div class="program-icon">🏔</div>
+        <div class="program-duration">3 weeks · Oct – Nov 2025</div>
+        <h3 class="program-name">Himalayan Climate & Ecology</h3>
+        <p class="program-desc">Field study in mountain ecosystems, glacier retreat dynamics, and community adaptation to climate change. Work with ICIMOD researchers and trek to study sites above 4,000m.</p>
+        <div class="program-tags">
+          <span class="program-tag">Environmental Science</span>
+          <span class="program-tag">Geography</span>
+          <span class="program-tag">Sustainability</span>
+        </div>
+        <div class="program-footer">
+          <div class="program-price">$2,800 <span>/ student</span></div>
+          <a href="#apply" class="program-link">Apply <span>→</span></a>
+        </div>
+      </div>
+      <div class="program-card" style="--card-accent: var(--rust);">
+        <div class="program-num">02</div>
+        <div class="program-icon">⚡</div>
+        <div class="program-duration">2 weeks · Feb – Mar 2026</div>
+        <h3 class="program-name">Disaster Risk Reduction Lab</h3>
+        <p class="program-desc">Nepal experiences earthquakes, floods, and landslides. Work with NDRRMA and affected communities to understand risk assessment, emergency response, and community resilience-building.</p>
+        <div class="program-tags">
+          <span class="program-tag">Civil Engineering</span>
+          <span class="program-tag">Public Policy</span>
+          <span class="program-tag">DRR</span>
+        </div>
+        <div class="program-footer">
+          <div class="program-price">$2,400 <span>/ student</span></div>
+          <a href="#apply" class="program-link">Apply <span>→</span></a>
+        </div>
+      </div>
+      <div class="program-card" style="--card-accent: var(--gold);">
+        <div class="program-num">03</div>
+        <div class="program-icon">🏛</div>
+        <div class="program-duration">2 weeks · Apr 2026</div>
+        <h3 class="program-name">Spirituality, Heritage & Architecture</h3>
+        <p class="program-desc">Immerse in living Buddhist and Hindu traditions, document UNESCO heritage sites with heritage conservation experts, and study Newari architecture in the Kathmandu Valley.</p>
+        <div class="program-tags">
+          <span class="program-tag">Anthropology</span>
+          <span class="program-tag">Architecture</span>
+          <span class="program-tag">Religious Studies</span>
+        </div>
+        <div class="program-footer">
+          <div class="program-price">$2,200 <span>/ student</span></div>
+          <a href="#apply" class="program-link">Apply <span>→</span></a>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:1.5rem;letter-spacing:0.05em">
+      All programs include accommodation, field transport, local expert fees, and program materials. International flights excluded.
+    </p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-bg" id="how">
+  <div class="section-inner">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">How it works.</h2>
+    <div class="steps-grid fade-up">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3 class="step-title">Apply & be selected</h3>
+        <p class="step-desc">Submit a short application. Cohorts are kept to 12–15 students, selected for diversity of background and genuine academic interest.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3 class="step-title">Pre-departure preparation</h3>
+        <p class="step-desc">Receive reading materials, connect with your cohort online, and attend a virtual orientation with your program lead three weeks before departure.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3 class="step-title">Immerse in Nepal</h3>
+        <p class="step-desc">Field visits, expert lectures, community engagement, and daily reflection. Structured but not rigid — we leave room for what the country teaches you.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h3 class="step-title">Produce real work</h3>
+        <p class="step-desc">Each program culminates in a research report, fieldwork project, or policy brief — eligible for academic credit at partner institutions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THEMES / PILLARS -->
+<section class="section" id="themes">
+  <div class="section-inner">
+    <div class="section-label">What Nepal offers</div>
+    <h2 class="section-title fade-up">Nepal as a <em>living laboratory.</em></h2>
+    <div class="pillars-grid fade-up">
+      <div class="pillar">
+        <div class="pillar-icon-wrap">🌋</div>
+        <div class="pillar-content">
+          <h3>Disaster & Resilience</h3>
+          <p>Nepal sits at the intersection of three tectonic plates. Communities here have developed remarkable resilience systems — studied globally as models for post-disaster recovery.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon-wrap">🌿</div>
+        <div class="pillar-content">
+          <h3>Mountain Ecology</h3>
+          <p>From subtropical lowlands to the world's highest peaks, Nepal contains 10 of the world's 14 climatic zones. An unparalleled natural laboratory for ecology and climate research.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon-wrap">🏛</div>
+        <div class="pillar-content">
+          <h3>Living Heritage</h3>
+          <p>Seven UNESCO World Heritage Sites within the Kathmandu Valley. Ancient temples, palaces, and monasteries maintained by living communities, not museum curators.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon-wrap">🙏</div>
+        <div class="pillar-content">
+          <h3>Spiritual Traditions</h3>
+          <p>Buddhism and Hinduism coexist and interweave in Nepal in ways found nowhere else. Direct access to practitioners, scholars, and monasteries for genuine engagement.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon-wrap">🌾</div>
+        <div class="pillar-content">
+          <h3>Sustainable Agriculture</h3>
+          <p>Terraced farming systems developed over centuries, indigenous seed knowledge, and community irrigation networks that predate modern engineering by millennia.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon-wrap">🛡</div>
+        <div class="pillar-content">
+          <h3>Safety & Continuity</h3>
+          <p>Our real-time operational risk platform monitors weather, road conditions, and field safety — giving every cohort an experienced support infrastructure in the background.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section class="section pullquote-section">
+  <div class="section-inner">
+    <div class="pullquote-grid">
+      <div>
+        <p class="pullquote-text">The mountains here are not scenery. They are the curriculum.</p>
+        <p class="pullquote-attribution">— Yātrā · Program Philosophy</p>
+      </div>
+      <div class="pullquote-right">
+        <div class="mini-quote">
+          <p>"I came expecting to study climate change. I left understanding why communities choose to stay on floodplains — and what that means for policy."</p>
+          <div class="mini-quote-attr">Pilot participant · MSc Environmental Policy, UCL</div>
+        </div>
+        <div class="mini-quote">
+          <p>"The DRR program gave me primary fieldwork data that I couldn't have collected anywhere else. It became the foundation of my thesis."</p>
+          <div class="mini-quote-attr">Pilot participant · MPA candidate, Columbia SIPA</div>
+        </div>
+        <div class="mini-quote">
+          <p>"The cohort model worked. Being with 12 people from 8 countries made every conversation richer than any classroom I've been in."</p>
+          <div class="mini-quote-attr">Pilot participant · BA Anthropology, University of Edinburgh</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<section class="section apply-section" id="apply">
+  <div class="section-inner">
+    <div class="apply-grid">
+      <div class="apply-left">
+        <div class="section-label">Applications Open</div>
+        <h2>Ready to join a <em>cohort?</em></h2>
+        <p>Applications are reviewed on a rolling basis. Cohorts are kept deliberately small — 12 to 15 students — to preserve the quality of the experience.</p>
+        <div class="apply-details">
+          <div class="apply-detail-row">
+            <span class="apply-detail-label">Cohort size</span>
+            <span class="apply-detail-val">12–15 students per program</span>
+          </div>
+          <div class="apply-detail-row">
+            <span class="apply-detail-label">Eligibility</span>
+            <span class="apply-detail-val">Current university students or recent graduates</span>
+          </div>
+          <div class="apply-detail-row">
+            <span class="apply-detail-label">Academic credit</span>
+            <span class="apply-detail-val">Available via university partnerships</span>
+          </div>
+          <div class="apply-detail-row">
+            <span class="apply-detail-label">Deposit</span>
+            <span class="apply-detail-val">$300 to confirm (refundable within 14 days)</span>
+          </div>
+          <div class="apply-detail-row">
+            <span class="apply-detail-label">Included</span>
+            <span class="apply-detail-val">Accommodation, transport, expert fees, materials</span>
+          </div>
+        </div>
+        <a href="mailto:hello@yatra.np" class="btn-ghost">Questions? Write to us →</a>
+      </div>
+      <div class="apply-right">
+        <div class="form-card" id="apply-form-wrap">
+          <h3 class="form-title">Express interest</h3>
+          <p class="form-subtitle">We'll follow up within 48 hours with program details and next steps.</p>
+          <form id="apply-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First name</label>
+                <input type="text" class="form-input" placeholder="Maya" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last name</label>
+                <input type="text" class="form-input" placeholder="Patel" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email address</label>
+              <input type="email" class="form-input" placeholder="maya@university.edu" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">University</label>
+              <input type="text" class="form-input" placeholder="University of Edinburgh" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Program interest</label>
+                <select class="form-select" required>
+                  <option value="">Select program</option>
+                  <option>Himalayan Climate & Ecology</option>
+                  <option>Disaster Risk Reduction Lab</option>
+                  <option>Spirituality, Heritage & Architecture</option>
+                  <option>Not sure yet</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Field of study</label>
+                <input type="text" class="form-input" placeholder="Environmental Science">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Why Nepal? (optional)</label>
+              <textarea class="form-textarea" placeholder="Tell us what draws you to this kind of learning..."></textarea>
+            </div>
+            <button type="submit" class="form-submit">Submit expression of interest</button>
+            <p class="form-note">No commitment required. We'll be in touch within 48 hours.</p>
+          </form>
+          <div class="form-success" id="form-success">
+            <div class="form-success-icon">✦</div>
+            <h3>Thank you for your interest.</h3>
+            <p>We'll reach out within 48 hours with full program details and application next steps.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="background: var(--parchment);">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom: 1rem;">
+      <div class="section-label" style="justify-content:center;display:flex">Questions</div>
+      <h2 class="section-title" style="text-align:center">Frequently asked.</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">Do I need prior experience in Nepal or the subject area? <span class="faq-icon">+</span></button>
+        <div class="faq-answer">No prior Nepal experience is required. Programs are designed for students with an academic interest in the field — introductory coursework in the relevant subject helps, but curiosity and commitment matter more than expertise.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can I get academic credit for participating? <span class="faq-icon">+</span></button>
+        <div class="faq-answer">We are establishing credit-transfer partnerships with universities. If your institution is not yet a partner, we provide a detailed program syllabus, a learning outcomes document, and a project assessment that many universities will accept for independent study or elective credit — but we recommend confirming with your academic advisor before applying.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">What is the safety protocol for field programs? <span class="faq-icon">+</span></button>
+        <div class="faq-answer">All programs operate with a live operational risk monitoring system, mandatory travel insurance, and an experienced local program coordinator. We partner with established Nepali field operators for all trekking and remote activities. Emergency evacuation protocols are briefed on arrival and reviewed before any field activity.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Is Nepal safe for international students? <span class="faq-icon">+</span></button>
+        <div class="faq-answer">Nepal consistently ranks as one of the safest countries in Asia for international visitors. Kathmandu is a cosmopolitan city with an established infrastructure for international students. All field routes are assessed for safety and risk before each cohort, and itineraries are adjusted in real time based on conditions.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">What is included in the program fee? <span class="faq-icon">+</span></button>
+        <div class="faq-answer">The program fee includes all accommodation (twin or triple share), ground transport within Nepal, local expert and lecturer fees, field equipment, program materials, cultural activities, and a farewell dinner. It does not include international flights, personal travel insurance, visas, or personal expenses.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can my university partner with Yātrā directly? <span class="faq-icon">+</span></button>
+        <div class="faq-answer">Yes — we actively welcome university partnerships for credit-bearing programs and reserved cohort seats. Write to us at hello@yatra.np and we will share our partnership framework and curriculum documentation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">Yātrā<span>.</span></div>
+        <p class="footer-tagline">Immersive academic cohort programs in Nepal. Where the curriculum is alive, and the classroom has no walls.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Programs</div>
+        <ul>
+          <li><a href="#programs">Himalayan Climate & Ecology</a></li>
+          <li><a href="#programs">Disaster Risk Reduction</a></li>
+          <li><a href="#programs">Spirituality & Heritage</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <ul>
+          <li><a href="#about">About Yātrā</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#apply">Apply now</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Contact</div>
+        <ul>
+          <li><a href="mailto:hello@yatra.np">hello@yatra.np</a></li>
+          <li><a href="#">University partnerships</a></li>
+          <li><a href="#">Press & media</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Yātrā. Kathmandu, Nepal. All rights reserved.</p>
+      <div class="footer-badge">Cohorts open · 2025–26</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a, button, .program-card, .pillar, .faq-question').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+});
+
+// Nav scroll
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Fade-up on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// FAQ
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// Form
+document.getElementById('apply-form').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('apply-form').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const offset = 80;
+      window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
